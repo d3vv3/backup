@@ -39,7 +39,6 @@ def main():
 
     b = backup.Backup(src, group, dst=dst)
     b.run()
-    b.release_lock()
 
 
 if __name__ == '__main__':
