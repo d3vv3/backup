@@ -45,10 +45,11 @@ A tool as an exercise :)
 6. Similar approach to Syncthing on `Send only mode`, where if two backups are called, it will add the new files and keep the old ones that have not been overwritten.
 7. Permissions are kept as the original files.
 8. The program needs the source folder and the group name in order to run.
-9. Logs are stored in the user's home.
+9. Logs are stored in the user's home under `~/.backuptool/backup.log`
 
 ### Considered but not implemented
 
 1. Check if there were changes on the new files being copied (in case of overwrite).
 2. Use a `tar.gz` or tape archive to store the backup (and save space).
-3.
+3. Implement hardlinks.
+4. Optimization.
