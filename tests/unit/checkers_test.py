@@ -1,7 +1,7 @@
 import os
 import uuid
 
-import checkers
+from backup import checkers
 
 
 def test_check_group():

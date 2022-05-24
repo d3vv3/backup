@@ -1,7 +1,7 @@
 import os
 import uuid
 
-import backup
+from backup import backup
 
 
 def test_backup_lock():
