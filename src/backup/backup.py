@@ -57,24 +57,26 @@ class Backup:
         if checkers.path_owned_by_group(source, self.group):
             relative_path = os.path.relpath(root_folder, self.src)
             new_path = os.path.join(self.dst, relative_path)
+            logger.debug("Backing %s to %s", source, new_path)
             if os.path.isdir(source):
                 if not os.path.isdir(new_path):
-                    os.mkdir(new_path)
+                    os.makedirs(new_path)
                     self.copy_owner(source, new_path)
-                return
             else:
+                if not os.path.isdir(new_path):
+                    os.makedirs(new_path)
                 shutil.copy2(source, new_path)
                 self.copy_owner(
                     source,
                     os.path.join(new_path, Path(source).name))
-                return
+        return
 
     def iterate(self):
         '''
         Iterate through the source directory to backup the files
         '''
         for root, dirs, files in os.walk(self.src):
-            self.backup_item(root, root)
+            # self.backup_item(root, root)
             for directory in dirs:
                 path = os.path.join(root, directory)
                 self.backup_item(path, root)
