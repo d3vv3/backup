@@ -2,7 +2,7 @@ import os
 import logging
 import argparse
 from pathlib import Path
-import backup
+from backup import backup
 
 
 __version__ = '0.1.0'

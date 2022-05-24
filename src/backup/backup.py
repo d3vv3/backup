@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 
-import checkers
+from backup import checkers
 
 logger = logging.getLogger(__name__)
 
