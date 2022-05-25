@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from backup import checkers
+from movy import checkers
 
 
 def test_check_group():

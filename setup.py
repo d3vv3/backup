@@ -42,9 +42,9 @@ except Exception:
 
 
 setup(
-    name='backup',
-    version=find_version('src/backup/__main__.py'),
-    description='A tool for creating group files backups',
+    name='movy',
+    version=find_version('src/movy/__main__.py'),
+    description="A cli tool to move your users' group files.",
     long_description=long_description,
     author='d3vv3',
     author_email='devve.3@gmail.com',
@@ -59,14 +59,14 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3 :: Only",
     ],
-    keywords="backup, group, folder, archive",
+    keywords="move, group, folder, archive",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     python_requires=">=3.7, <4",
     # install_requires=[],
     entry_points={
         'console_scripts': [
-            'backup = backup.__main__:main',
-            'backup-cli=backup.__main__:main'
+            'movy = movy.__main__:main',
+            'movy-cli=movy.__main__:main'
         ]
     })
