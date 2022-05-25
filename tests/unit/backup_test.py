@@ -1,14 +1,14 @@
 import os
 import uuid
 
-from backup import backup
+from movy import movy
 
 
-def test_backup_lock():
+def test_move_lock():
     test_folder = os.path.join('/tmp', str(uuid.uuid4()))
     os.mkdir(test_folder)
-    a = backup.Backup(test_folder, os.getlogin())
-    assert os.path.exists('/tmp/.backup.lock')
+    a = movy.Movy(test_folder, os.getlogin())
+    assert os.path.exists('/tmp/.movy.lock')
     a.release_lock()
-    assert not os.path.exists('/tmp/.backup.lock')
+    assert not os.path.exists('/tmp/.movy.lock')
     os.rmdir(test_folder)
