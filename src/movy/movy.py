@@ -6,16 +6,16 @@ import sys
 from pathlib import Path
 
 
-from backup import checkers
+from movy import checkers
 
 logger = logging.getLogger(__name__)
 
 
-class Backup:
+class Movy:
 
-    lock_file_path = '/tmp/.backup.lock'
+    lock_file_path = '/tmp/.movy.lock'
 
-    def __init__(self, src, group, dst='./backup'):
+    def __init__(self, src, group, dst='./movy'):
         self.src = src
         self.dst = dst
         self.group = group
@@ -48,7 +48,7 @@ class Backup:
 
     def backup_item(self, source: str, root_folder: str):
         '''
-        Copy a directory or file from the source path to the
+        Copy a directory or move file from the source path to the
         backup destination
         Args:
             * source (str): path for the original file or directory
@@ -57,7 +57,9 @@ class Backup:
         if checkers.path_owned_by_group(source, self.group):
             relative_path = os.path.relpath(root_folder, self.src)
             new_path = os.path.join(self.dst, relative_path)
-            logger.debug("Backing %s to %s", source, new_path)
+            new_file_path = os.path.join(
+                new_path, os.path.join(new_path, Path(source).name))
+            logger.debug("Moving %s to %s", source, new_path)
             if os.path.isdir(source):
                 if not os.path.isdir(new_path):
                     os.makedirs(new_path)
@@ -65,10 +67,9 @@ class Backup:
             else:
                 if not os.path.isdir(new_path):
                     os.makedirs(new_path)
-                shutil.copy2(source, new_path)
-                self.copy_owner(
-                    source,
-                    os.path.join(new_path, Path(source).name))
+                shutil.move(source, new_file_path)
+                path_to_check, _ = os.path.split(source)
+                self.delete_dir_if_empty(path_to_check)
         return
 
     def iterate(self):
@@ -76,7 +77,6 @@ class Backup:
         Iterate through the source directory to backup the files
         '''
         for root, dirs, files in os.walk(self.src):
-            # self.backup_item(root, root)
             for directory in dirs:
                 path = os.path.join(root, directory)
                 self.backup_item(path, root)
@@ -87,7 +87,7 @@ class Backup:
     @staticmethod
     def copy_owner(source: str, new_path: str):
         '''
-        Copy the source owner to the target file or directory.
+        Copy the source owner to the target directory.
 
         Args:
             * source (str): path for the original file or directory
@@ -96,11 +96,19 @@ class Backup:
         st = os.stat(source)
         os.chown(new_path, st.st_uid, st.st_gid)
 
+    @staticmethod
+    def delete_dir_if_empty(folder: str):
+        if not any(os.scandir(folder)):
+            os.removedirs(folder)
+
     def run(self):
+        '''
+        Move the files
+        '''
         if not checkers.check_folder_exists(self.dst, create=True):
             sys.exit()
-        logger.info("Backing files from %s to %s for group %s",
+        logger.info("Moving files from %s to %s for group %s",
                     self.src, self.dst, self.group)
         self.iterate()
         self.release_lock()
-        logger.info("Backup finished")
+        logger.info("Finished")
